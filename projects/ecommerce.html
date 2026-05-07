@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partnership E-Commerce Platform · Keandre Rafael</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">Keandre<span>.dev</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu">menu</button>
+      <ul class="nav-links">
+        <li><a href="../index.html">home</a></li>
+        <li><a href="../about.html">about</a></li>
+        <li><a href="../projects.html">projects</a></li>
+        <li><a href="../contact.html">contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <a href="../projects.html" class="back-link">← back to projects</a>
+
+    <header class="project-header">
+      <span class="badge badge-personal" style="margin-bottom: 1rem;">// e-commerce · full-stack</span>
+      <h1>Partnership E-Commerce Platform</h1>
+      <p style="margin-top: 0.75rem; max-width: 720px;">
+        A multi-vendor marketplace where any registered user can become a partner and list their own products, while customers shop across the whole catalogue from a single unified cart.
+      </p>
+      <div class="project-meta">
+        <span>web app</span>
+        <span>full-stack</span>
+        <span>Laravel 11</span>
+        <span>2025</span>
+      </div>
+    </header>
+
+    <div class="project-content">
+      <div class="placeholder-img">[ screenshot.png — drop your screenshot here ]</div>
+
+      <h3>Overview</h3>
+      <p>
+        The platform implements a partnership marketplace model: instead of one shop owner managing all listings, every user can register as a partner and manage their own product catalogue. Customers browse across all partners as if it were one storefront, add items to a single cart, and check out together.
+      </p>
+      <p>
+        It's structured as a Laravel 11 monolith with role-based access — guests can browse, customers can buy, partners get a "my products" dashboard for CRUD on their own listings, and admins manage the user base from a separate admin area.
+      </p>
+
+      <h3>Key Features</h3>
+      <ul>
+        <li><strong>Public catalogue</strong> — landing page and product listing with detail pages for every product</li>
+        <li><strong>Partner dashboard</strong> — partners manage their own products at <code>/me/products</code> with full create / edit / delete</li>
+        <li><strong>Multi-image products</strong> — each product can carry multiple images via a dedicated <code>product_images</code> table</li>
+        <li><strong>Shared cart</strong> — one cart per user, mixing items from multiple partners; supports add, update quantity, and remove</li>
+        <li><strong>Authentication</strong> — full register / login / logout flow with separate routes for sign-up and sign-in</li>
+        <li><strong>Role-based access</strong> — <code>role</code> column on users gates the partner and admin areas</li>
+        <li><strong>Admin panel</strong> — dashboard plus a user resource controller for managing accounts</li>
+      </ul>
+
+      <h3>My Role</h3>
+      <p>
+        // Describe your specific contribution — solo build, or which parts you owned in a team. Mention any interesting decisions: schema design, role logic, image handling, etc.
+      </p>
+
+      <h3>Architecture</h3>
+      <ul>
+        <li><strong>Backend:</strong> Laravel 11 controllers and Eloquent models — <code>User</code>, <code>Product</code>, <code>ProductImage</code>, <code>Cart</code>, <code>CartItem</code></li>
+        <li><strong>Frontend:</strong> Blade templates styled with Tailwind CSS, plus Bootstrap components where it sped things up</li>
+        <li><strong>Build:</strong> Vite for asset bundling, with the Laravel Vite plugin for hot reload during development</li>
+        <li><strong>Database:</strong> SQLite for local development — easily swappable for MySQL/Postgres in production via Laravel's database config</li>
+      </ul>
+
+      <h3>Tech Stack</h3>
+      <div class="tags" style="margin-bottom: 1.5rem;">
+        <span class="tag">Laravel 11</span>
+        <span class="tag">PHP 8.2</span>
+        <span class="tag">Blade</span>
+        <span class="tag">Tailwind CSS</span>
+        <span class="tag">Bootstrap 5</span>
+        <span class="tag">Vite</span>
+        <span class="tag">Axios</span>
+        <span class="tag">SQLite</span>
+      </div>
+
+      <h3>Links</h3>
+      <ul>
+        <li><a href="https://github.com/Surudoi110/Partnership-E-Commerce-Platform" target="_blank" rel="noopener">GitHub repo</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>Built with HTML, CSS &amp; JS · Hosted on GitHub Pages</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
