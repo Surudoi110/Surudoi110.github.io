@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dr. Cal — Calorie Tracker · Keandre Rafael</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">Keandre<span>.dev</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu">menu</button>
+      <ul class="nav-links">
+        <li><a href="../index.html">home</a></li>
+        <li><a href="../about.html">about</a></li>
+        <li><a href="../projects.html">projects</a></li>
+        <li><a href="../contact.html">contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <a href="../projects.html" class="back-link">← back to projects</a>
+
+    <header class="project-header">
+      <span class="badge badge-personal" style="margin-bottom: 1rem;">// full-stack · pwa</span>
+      <h1>Dr. Cal — Calorie Tracker</h1>
+      <p style="margin-top: 0.75rem; max-width: 720px;">
+        A student-friendly calorie tracker. Mobile-first React 19 PWA on the front, Laravel 12 + Sanctum on the back — with token auth, meal &amp; exercise logging, a live daily summary, and 14 days of history.
+      </p>
+      <div class="project-meta">
+        <span>full-stack</span>
+        <span>mobile-first</span>
+        <span>Laravel 12 + React 19</span>
+        <span>2026</span>
+      </div>
+    </header>
+
+    <div class="project-content">
+      <div class="placeholder-img">[ screenshot.png — drop your dashboard or history screenshot here ]</div>
+
+      <h3>Overview</h3>
+      <p>
+        Dr. Cal is a complete two-tier app, designed for the small-screen "phone in hand" use case. The frontend is a React 19 SPA built with Vite that talks to a Laravel 12 API over JSON. Every protected route waits for a Sanctum bearer token — register or log in, and the token is cached in <code>localStorage</code> and attached to every subsequent request through an axios interceptor.
+      </p>
+      <p>
+        The dashboard isn't static. It pulls from <code>/api/today</code>, which assembles meals grouped by type, exercise totals, and a smart tip on every request — so the screen reflects whatever you logged in the last few seconds.
+      </p>
+
+      <h3>Architecture</h3>
+      <pre style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; overflow-x: auto; font-family: var(--mono); font-size: 0.85rem; color: var(--text-muted); margin: 1rem 0;">
+[React SPA · Vite, port 5173]
+       │
+       ├─ AuthContext  →  localStorage (token + user)
+       ├─ axios client →  Bearer interceptor + 401 auto-redirect
+       │
+       ▼ JSON over HTTP
+[Laravel 12 API · port 8000]
+       │
+       ├─ AuthController       — register / login / me / logout
+       ├─ MealController       — CRUD with ownership checks
+       ├─ ExerciseController   — CRUD with ownership checks
+       └─ SummaryController    — /today + /history aggregations
+       │
+       ▼ Eloquent
+[SQLite] users · meals · exercises · personal_access_tokens</pre>
+
+      <h3>Database Schema</h3>
+      <ul>
+        <li><strong>users</strong> — id, name, email (unique), password (hashed), timestamps</li>
+        <li><strong>meals</strong> — id, user_id (FK cascade), name, calories, meal_type (Breakfast / Lunch / Dinner / Snack), consumed_at, timestamps</li>
+        <li><strong>exercises</strong> — id, user_id (FK cascade), name, calories_burned, performed_at, timestamps</li>
+      </ul>
+
+      <h3>Key Features</h3>
+      <ul>
+        <li><strong>Auth flow</strong> — register, login, logout, with auto-login after sign-up so users land on the dashboard immediately</li>
+        <li><strong>Protected routes</strong> — a <code>ProtectedRoute</code> wrapper redirects unauthenticated users back to <code>/login</code> and remembers where they were trying to go</li>
+        <li><strong>Dashboard</strong> — progress ring rendered with <code>conic-gradient</code> showing % of daily target, intake / burn / net stat strip, meal cards by type, and a smart tip that adjusts to where the user is in their day</li>
+        <li><strong>Add Food</strong> — meal-type select pre-fills from a <code>?type=</code> query param so the dashboard's "+" buttons feel native</li>
+        <li><strong>Log Exercise</strong> — quick-pick chips for common activities (Walking / Running / Cycling / Yoga / Swimming) with estimated kcal, plus a free-form form</li>
+        <li><strong>14-day History</strong> — per-day net with a progress bar that turns red when over target, plus intake↑ / burn↓ breakdown</li>
+        <li><strong>Pro page</strong> — feature comparison table, mock upgrade button</li>
+      </ul>
+
+      <h3>Technical Highlights</h3>
+      <ul>
+        <li><strong>Sanctum personal access tokens</strong> for stateless bearer auth — no CSRF dance, easy to swap to native mobile clients later</li>
+        <li><strong>Ownership-checked destroy endpoints</strong> — both <code>MealController::destroy</code> and <code>ExerciseController::destroy</code> verify <code>user_id</code> before deleting (the original prototype had a bug that let any authenticated user delete any meal)</li>
+        <li><strong>Server-computed daily summary</strong> — instead of doing math in the browser, <code>SummaryController::today</code> returns the full payload (totals, groupings, remaining, tip) so the frontend just renders. Easier to test, easier to swap clients.</li>
+        <li><strong>Meal-type as enum</strong> — validated server-side via <code>Rule::in(Meal::TYPES)</code> so the four-section dashboard layout can never be broken by bad data</li>
+        <li><strong>Smart tip generator</strong> — the backend looks at the user's % of target and returns a contextual nudge ("solid pace", "almost at your target", "consider a short walk")</li>
+        <li><strong>CORS locked to dev origin</strong> — <code>localhost:5173</code> only, configurable via <code>FRONTEND_URL</code> env var</li>
+        <li><strong>PWA-ready</strong> — Vite project structure is set up for <code>vite-plugin-pwa</code> registration; the SW hook is left as a one-liner to enable</li>
+      </ul>
+
+      <h3>Frontend Routes</h3>
+      <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; font-family: var(--mono); font-size: 0.875rem; color: var(--text-muted);">
+        <div>/              <span style="color: var(--text-faded);">— Welcome (public)</span></div>
+        <div>/login         <span style="color: var(--text-faded);">— Login (public)</span></div>
+        <div>/register      <span style="color: var(--text-faded);">— Register (public)</span></div>
+        <div>/dashboard     <span style="color: var(--text-faded);">— Today's totals (protected)</span></div>
+        <div>/add-food      <span style="color: var(--text-faded);">— New meal form (protected)</span></div>
+        <div>/log-exercise  <span style="color: var(--text-faded);">— New exercise form (protected)</span></div>
+        <div>/history       <span style="color: var(--text-faded);">— Last 14 days (protected)</span></div>
+        <div>/pro           <span style="color: var(--text-faded);">— Mock upgrade page (protected)</span></div>
+      </div>
+
+      <h3>Tech Stack</h3>
+      <div class="tags" style="margin-bottom: 1.5rem;">
+        <span class="tag">Laravel 12</span>
+        <span class="tag">PHP 8.2</span>
+        <span class="tag">Sanctum</span>
+        <span class="tag">Eloquent ORM</span>
+        <span class="tag">React 19</span>
+        <span class="tag">Vite</span>
+        <span class="tag">React Router v7</span>
+        <span class="tag">axios</span>
+        <span class="tag">SQLite</span>
+      </div>
+
+      <h3>Links</h3>
+      <ul>
+        <li><a href="https://github.com/Surudoi110/dr-cal" target="_blank" rel="noopener">GitHub repo</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>Built with HTML, CSS &amp; JS · Hosted on GitHub Pages</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

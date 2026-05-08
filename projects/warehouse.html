@@ -27,16 +27,16 @@
     <a href="../projects.html" class="back-link">← back to projects</a>
 
     <header class="project-header">
-      <span class="badge badge-personal" style="margin-bottom: 1rem;">// internal tool</span>
+      <span class="badge badge-personal" style="margin-bottom: 1rem;">// internal tool · clean architecture</span>
       <h1>Warehouse Management System</h1>
       <p style="margin-top: 0.75rem; max-width: 720px;">
-        An internal tool for tracking inventory, stock movements, and warehouse operations — designed around real workflows: receiving, picking, packing, and shipping.
+        An ASP.NET Core 8 internal tool for tracking inventory across multiple warehouse locations — built around atomic stock movements, role-based access, and a clean-architecture layout that keeps the domain free of framework dependencies.
       </p>
       <div class="project-meta">
         <span>internal tool</span>
         <span>full-stack</span>
-        <span>// solo / team</span>
-        <span>// add year</span>
+        <span>ASP.NET Core 8</span>
+        <span>2026</span>
       </div>
     </header>
 
@@ -45,33 +45,64 @@
 
       <h3>Overview</h3>
       <p>
-        // Replace with the actual context: who uses this system, what problem it solves, and what made it interesting to build.
+        The system models a real warehouse: products live in <strong>locations</strong>, stock at each location is tracked as an <strong>inventory item</strong>, and every change is recorded as a <strong>stock movement</strong> (Receive, Ship, or Adjustment). The dashboard surfaces totals, low-stock alerts, recent activity, and a 7-day in/out trend.
       </p>
+      <p>
+        I deliberately structured it as a clean-architecture solution rather than a single Razor app — keeping the domain pure and the data layer swappable made it much easier to write fast, isolated tests for the stock-movement logic.
+      </p>
+
+      <h3>Architecture</h3>
+      <p>The solution is split into four projects, each with a single responsibility:</p>
+      <ul>
+        <li><strong>WarehouseApp.Core</strong> — pure C# domain. Entities and service interfaces only. No EF, no ASP.NET, no dependencies.</li>
+        <li><strong>WarehouseApp.Infrastructure</strong> — EF Core 8 + MySQL (Pomelo provider), the <code>ApplicationDbContext</code>, migrations, seed data, and concrete service implementations.</li>
+        <li><strong>WarehouseApp.Web</strong> — ASP.NET Core MVC with Razor Views, Identity for auth, and controllers for every resource.</li>
+        <li><strong>WarehouseApp.Tests</strong> — xUnit suite running against EF Core's InMemory provider for fast, isolated tests.</li>
+      </ul>
+
+      <h3>Domain Model</h3>
+      <ul>
+        <li><strong>Product</strong> — SKU, name, description, unit price, reorder level</li>
+        <li><strong>Location</strong> — code + description (e.g. <code>BIN-A1</code>, <code>DOCK-3</code>)</li>
+        <li><strong>InventoryItem</strong> — quantity of a product at a specific location</li>
+        <li><strong>StockMovement</strong> — append-only record of every Receive / Ship / Adjustment with quantity, reference number, notes, performing user, and timestamp</li>
+      </ul>
 
       <h3>Key Features</h3>
       <ul>
-        <li>Inventory tracking across multiple warehouse locations</li>
-        <li>Stock-in / stock-out logging with audit history</li>
-        <li>Role-based access for staff and managers</li>
-        <li>Reporting on stock levels and movement</li>
-        <li>// edit me</li>
+        <li><strong>Products & Locations CRUD</strong> — full create / edit / delete with validation</li>
+        <li><strong>Inventory view</strong> — stock-on-hand by product and location</li>
+        <li><strong>Receive flow</strong> — pull stock in; auto-creates the inventory row if it doesn't exist yet</li>
+        <li><strong>Ship flow</strong> — pull stock out, with oversell prevention (rejects if requested qty exceeds available)</li>
+        <li><strong>Movement history</strong> — every change is logged with user, timestamp, and reference number</li>
+        <li><strong>Dashboard</strong> — totals (products, locations, units), low-stock alerts based on each product's reorder level, recent movements, and a 7-day in/out chart</li>
+        <li><strong>Identity-based auth</strong> — ASP.NET Core Identity gates all admin operations and stamps every movement with the performing user ID</li>
       </ul>
 
-      <h3>My Role</h3>
-      <p>
-        // Describe your specific contribution — backend logic, database schema, UI, etc.
-      </p>
+      <h3>Technical Highlights</h3>
+      <ul>
+        <li><strong>Atomic stock movements</strong> — each Receive/Ship runs inside a database transaction (<code>BeginTransactionAsync</code> → <code>CommitAsync</code>) so the movement record and inventory adjustment commit or roll back together</li>
+        <li><strong>Oversell prevention</strong> — Ship checks current available qty against the requested amount before writing anything</li>
+        <li><strong>Tested service layer</strong> — 7 xUnit tests covering happy paths and edge cases (zero quantity, unknown product, no inventory, oversell)</li>
+        <li><strong>Result-type responses</strong> — services return a <code>StockOperationResult</code> with <code>Success</code> + optional error message instead of throwing on validation failures</li>
+        <li><strong>EF Core migrations</strong> — schema evolution is version-controlled and reproducible</li>
+      </ul>
 
       <h3>Tech Stack</h3>
       <div class="tags" style="margin-bottom: 1.5rem;">
-        <span class="tag">// edit me</span>
-        <span class="tag">// edit me</span>
-        <span class="tag">// edit me</span>
+        <span class="tag">ASP.NET Core 8</span>
+        <span class="tag">C# / .NET 8</span>
+        <span class="tag">Entity Framework Core</span>
+        <span class="tag">MySQL (Pomelo)</span>
+        <span class="tag">ASP.NET Identity</span>
+        <span class="tag">Razor Views</span>
+        <span class="tag">Bootstrap</span>
+        <span class="tag">xUnit</span>
       </div>
 
       <h3>Links</h3>
       <ul>
-        <li><a href="#" target="_blank" rel="noopener">GitHub repo</a> — // add link</li>
+        <li><a href="https://github.com/Surudoi110/warehouse-management-system" target="_blank" rel="noopener">GitHub repo</a></li>
       </ul>
     </div>
   </main>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uptime Dashboard · Keandre Rafael</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">Keandre<span>.dev</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu">menu</button>
+      <ul class="nav-links">
+        <li><a href="../index.html">home</a></li>
+        <li><a href="../about.html">about</a></li>
+        <li><a href="../projects.html">projects</a></li>
+        <li><a href="../contact.html">contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <a href="../projects.html" class="back-link">← back to projects</a>
+
+    <header class="project-header">
+      <span class="badge badge-personal" style="margin-bottom: 1rem;">// dashboard · real-time</span>
+      <h1>Uptime Dashboard</h1>
+      <p style="margin-top: 0.75rem; max-width: 720px;">
+        A Laravel 11 monitoring dashboard that pings a configurable list of URLs every minute, records response time and HTTP status, and visualizes everything with Chart.js. The frontend polls the backend every 10 seconds for live updates.
+      </p>
+      <div class="project-meta">
+        <span>solo project</span>
+        <span>real-time</span>
+        <span>Laravel 11</span>
+        <span>2026</span>
+      </div>
+    </header>
+
+    <div class="project-content">
+      <div class="placeholder-img">[ screenshot.png — drop your dashboard screenshot here ]</div>
+
+      <h3>Overview</h3>
+      <p>
+        I built this as a solo follow-up to a team bandwidth-monitoring project — same general shape (scheduled task → DB → live dashboard), but focused on API/website uptime instead of network throughput. You configure a list of endpoints to monitor, the scheduler hits each one every minute, and the dashboard surfaces current status, response-time history, uptime percentages, and a recent-incidents log.
+      </p>
+
+      <h3>Architecture</h3>
+      <p>The data flow is intentionally simple — a single scheduled command writes, the dashboard polls a JSON endpoint to read:</p>
+      <pre style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; overflow-x: auto; font-family: var(--mono); font-size: 0.85rem; color: var(--text-muted); margin: 1rem 0;">
+[Scheduler] ──every 1 min──> [CheckEndpoints command] ──> [health_checks table]
+                                                                  │
+[Browser]  <──polls every 10s── [DashboardController@json]  <─────┘
+                                          │
+                                          └─> renders Chart.js + status cards</pre>
+
+      <h3>Database Schema</h3>
+      <p>Two tables, one foreign key:</p>
+      <ul>
+        <li><strong>endpoints</strong> — id, name, url, expected_status, is_active, timestamps</li>
+        <li><strong>health_checks</strong> — id, endpoint_id (FK, cascadeOnDelete), response_time_ms, status_code, was_up, error_message, checked_at</li>
+      </ul>
+
+      <h3>Key Features</h3>
+      <ul>
+        <li><strong>Endpoint CRUD</strong> — add/edit/delete the URLs being monitored, toggle active state</li>
+        <li><strong>Scheduled checks</strong> — Laravel scheduler triggers <code>app:check-endpoints</code> every minute</li>
+        <li><strong>Live status cards</strong> — UP/DOWN/UNKNOWN pills with last response time and 24h + 7d uptime percentages</li>
+        <li><strong>Response-time charts</strong> — Chart.js line chart per endpoint over the last 24h, fixed-height containers to prevent layout reflow</li>
+        <li><strong>Incidents table</strong> — failures from the last 24h with status code and error message</li>
+        <li><strong>Manual checks</strong> — a "Check now" button on each endpoint runs an out-of-band check via Artisan and reflects the result immediately</li>
+      </ul>
+
+      <h3>Technical Highlights</h3>
+      <ul>
+        <li><strong>Schedule with overlap protection</strong> — the every-minute job uses <code>withoutOverlapping(5)</code> so a slow check can't double up if the previous one is still running</li>
+        <li><strong>Resilient HTTP checks</strong> — Laravel HTTP client with configurable timeout, error capture stored on the row, and a custom user agent for politeness</li>
+        <li><strong>Frontend polling, not WebSockets</strong> — pragmatic choice: a 10-second poll on a small JSON endpoint is far simpler than setting up Laravel Reverb/Pusher and gives a "live" feel without the operational complexity</li>
+        <li><strong>Chart.js with <code>animation: 'none'</code> on update</strong> — keeps the polling refresh smooth instead of replaying the line every 10s</li>
+        <li><strong>Uptime calculation as a model helper</strong> — <code>$endpoint-&gt;uptimePercentage(24)</code> works on any time window in hours</li>
+        <li><strong>Foreign-key cascade</strong> — deleting an endpoint cleans up all its health checks atomically</li>
+        <li><strong>SQLite by default</strong> — zero-config local dev, but the connection swaps to MySQL/Postgres via one <code>.env</code> change</li>
+      </ul>
+
+      <h3>Tech Stack</h3>
+      <div class="tags" style="margin-bottom: 1.5rem;">
+        <span class="tag">Laravel 11</span>
+        <span class="tag">PHP 8.2</span>
+        <span class="tag">Eloquent ORM</span>
+        <span class="tag">Laravel Scheduler</span>
+        <span class="tag">Blade</span>
+        <span class="tag">Tailwind CSS (CDN)</span>
+        <span class="tag">Chart.js</span>
+        <span class="tag">SQLite</span>
+        <span class="tag">Guzzle (via Http facade)</span>
+      </div>
+
+      <h3>Links</h3>
+      <ul>
+        <li><a href="https://github.com/Surudoi110/uptime-dashboard" target="_blank" rel="noopener">GitHub repo</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>Built with HTML, CSS &amp; JS · Hosted on GitHub Pages</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
