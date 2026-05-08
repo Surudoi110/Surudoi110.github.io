@@ -30,7 +30,7 @@
       <span class="badge badge-ai" style="margin-bottom: 1rem;">// ai · nlp</span>
       <h1>Automatic Text Summarization</h1>
       <p style="margin-top: 0.75rem; max-width: 720px;">
-        Extractive and abstractive NLP models that condense long documents into concise summaries — with a side-by-side comparison of the two approaches.
+        Extractive and abstractive NLP models that condense long documents into concise summaries - with a side-by-side comparison of the two approaches.
       </p>
       <div class="project-meta">
         <span>NLP</span>
@@ -41,29 +41,39 @@
     </header>
 
     <div class="project-content">
-      <div class="placeholder-img">[ screenshot.png — drop your screenshot here ]</div>
+      <div class="placeholder-img">[ screenshot.png - drop your screenshot here ]</div>
 
       <h3>Overview</h3>
       <p>
-        // Replace with the real story: what motivated the project, what corpus you summarized, and what you wanted to learn from comparing the two approaches.
+        This project explores automatic text summarization of news articles using both extractive and abstractive 
+        techniques. Articles from the CNN/DailyMail dataset are summarized by three models:
+         TextRank, BART, and PEGASUS, and evaluated against human-written reference summaries 
+         using ROUGE metrics. A Streamlit web app is also included, allowing users to paste any 
+         news article and receive an instant summary powered by PEGASUS.
       </p>
 
       <h3>Approach</h3>
       <p style="font-weight: 600; color: var(--text); margin-top: 1rem;">Extractive</p>
       <p>
-        // Talk about the extractive method you used (e.g., TextRank, sentence scoring, BERT-based extractor). What it picks and why.
+        TextRank is a graph-based algorithm that ranks sentences by their similarity to one another, 
+        then selects the top-ranked sentences as the summary. No model training is required, 
+        it works purely on the structure of the input text. Implemented using the sumy library, 
+        TextRank extracts the 3 most important sentences from each article.
       </p>
 
       <p style="font-weight: 600; color: var(--text); margin-top: 1rem;">Abstractive</p>
       <p>
-        // Talk about the abstractive method (e.g., BART, T5, Pegasus). What it generates and how it differs from extractive output.
+        Unlike extractive methods, abstractive models generate new sentences that paraphrase and condense the source material.
+        - BART (facebook/bart-large-cnn): a sequence-to-sequence transformer pre-trained on the CNN/DailyMail dataset, called via the Hugging Face Inference API.
+        - PEGASUS (google/pegasus-cnn_dailymail): a transformer pre-trained with a gap-sentence generation objective specifically designed for summarization, also fine-tuned on CNN/DailyMail. Used in both the evaluation notebook and the Streamlit app.
+        All articles were preprocessed by normalizing whitespace and truncating to a maximum length before being passed to each model.
       </p>
 
       <h3>Evaluation</h3>
       <ul>
         <li>// metric you used (ROUGE-1 / ROUGE-2 / ROUGE-L / BLEU)</li>
         <li>// dataset you tested on</li>
-        <li>// findings — which approach worked better and when</li>
+        <li>// findings - which approach worked better and when</li>
       </ul>
 
       <h3>Tech Stack</h3>
@@ -76,8 +86,8 @@
 
       <h3>Links</h3>
       <ul>
-        <li><a href="#" target="_blank" rel="noopener">GitHub repo</a> — // add link</li>
-        <li><a href="#" target="_blank" rel="noopener">Notebook / writeup</a> — // add link</li>
+        <li><a href="#" target="_blank" rel="noopener">GitHub repo</a> - // add link</li>
+        <li><a href="#" target="_blank" rel="noopener">Notebook / writeup</a> - // add link</li>
       </ul>
     </div>
   </main>

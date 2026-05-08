@@ -41,38 +41,41 @@
     </header>
 
     <div class="project-content">
-      <div class="placeholder-img">[ screenshot.png — drop your screenshot here ]</div>
+      <div class="placeholder-img">[ screenshot.png - drop your screenshot here ]</div>
 
       <h3>Overview</h3>
       <p>
         The platform implements a partnership marketplace model: instead of one shop owner managing all listings, every user can register as a partner and manage their own product catalogue. Customers browse across all partners as if it were one storefront, add items to a single cart, and check out together.
       </p>
       <p>
-        It's structured as a Laravel 11 monolith with role-based access — guests can browse, customers can buy, partners get a "my products" dashboard for CRUD on their own listings, and admins manage the user base from a separate admin area.
+        It's structured as a Laravel 11 monolith with role-based access, guests can browse, customers can buy, partners get a "my products" dashboard for CRUD on their own listings, and admins manage the user base from a separate admin area.
       </p>
 
       <h3>Key Features</h3>
       <ul>
-        <li><strong>Public catalogue</strong> — landing page and product listing with detail pages for every product</li>
-        <li><strong>Partner dashboard</strong> — partners manage their own products at <code>/me/products</code> with full create / edit / delete</li>
-        <li><strong>Multi-image products</strong> — each product can carry multiple images via a dedicated <code>product_images</code> table</li>
-        <li><strong>Shared cart</strong> — one cart per user, mixing items from multiple partners; supports add, update quantity, and remove</li>
-        <li><strong>Authentication</strong> — full register / login / logout flow with separate routes for sign-up and sign-in</li>
-        <li><strong>Role-based access</strong> — <code>role</code> column on users gates the partner and admin areas</li>
-        <li><strong>Admin panel</strong> — dashboard plus a user resource controller for managing accounts</li>
+        <li><strong>Public catalogue</strong> - landing page and product listing with detail pages for every product</li>
+        <li><strong>Partner dashboard</strong> - partners manage their own products at <code>/me/products</code> with full create / edit / delete</li>
+        <li><strong>Multi-image products</strong> - each product can carry multiple images via a dedicated <code>product_images</code> table</li>
+        <li><strong>Shared cart</strong> - one cart per user, mixing items from multiple partners; supports add, update quantity, and remove</li>
+        <li><strong>Authentication</strong> - full register / login / logout flow with separate routes for sign-up and sign-in</li>
+        <li><strong>Role-based access</strong> - <code>role</code> column on users gates the partner and admin areas</li>
+        <li><strong>Admin panel</strong> - dashboard plus a user resource controller for managing accounts</li>
       </ul>
 
       <h3>My Role</h3>
       <p>
-        // Describe your specific contribution — solo build, or which parts you owned in a team. Mention any interesting decisions: schema design, role logic, image handling, etc.
+        Contributed to the development of the website by handling UI styling and implementing multiple pages, 
+        including the home page, admin dashboard, and contact page. 
+        Assisted in developing the admin dashboard view, managing database migrations, 
+        and implementing routing logic to improve site functionality and navigation.
       </p>
 
       <h3>Architecture</h3>
       <ul>
-        <li><strong>Backend:</strong> Laravel 11 controllers and Eloquent models — <code>User</code>, <code>Product</code>, <code>ProductImage</code>, <code>Cart</code>, <code>CartItem</code></li>
+        <li><strong>Backend:</strong> Laravel 11 controllers and Eloquent models - <code>User</code>, <code>Product</code>, <code>ProductImage</code>, <code>Cart</code>, <code>CartItem</code></li>
         <li><strong>Frontend:</strong> Blade templates styled with Tailwind CSS, plus Bootstrap components where it sped things up</li>
         <li><strong>Build:</strong> Vite for asset bundling, with the Laravel Vite plugin for hot reload during development</li>
-        <li><strong>Database:</strong> SQLite for local development — easily swappable for MySQL/Postgres in production via Laravel's database config</li>
+        <li><strong>Database:</strong> SQLite for local development - easily swappable for MySQL/Postgres in production via Laravel's database config</li>
       </ul>
 
       <h3>Tech Stack</h3>
